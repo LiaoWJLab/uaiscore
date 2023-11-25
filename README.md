@@ -3,22 +3,22 @@
 
 # UAIscore
 
-UAIscore is an R package for predicting the effectiveness of
-immunotherapy in patients with hepatocellular carcinoma (HCC).
+UAIscore is an R package for predicting the effectiveness of adjuvant
+immunotherapy in patients with urothelial carcinoma (UC).
 
 ## 1.Introduction
 
-1.UAIscore was developed to predict response to immunotherapy in
-patients with LIHC. 2.This package consists of a random survival model
-based on expression profiles of 50 genes selected by univariate Cox
+1.UAIscore was developed to predict response to adjuvant immunotherapy
+in patients with UC. 2.This package consists of a random survival model
+based on expression profiles of 91 genes selected by univariate Cox
 regression and subgroup analysis. 3.This package provides functions for
 different scenarios and allows visual assessment of whether patients are
-suitable for immunotherapy.
+suitable for adjuvant immunotherapy.
 
 ## 2.Installation
 
 It is essential that you already have R 3.6.3 or higher installed on
-your computer or server. Before installing HIRE, please install all
+your computer or server. Before installing uaiscore, please install all
 dependencies by running the following command in the R console:
 
 The dependencies include `crayon`, `ggplot2`, `randomForest`,
@@ -70,7 +70,7 @@ library(tidyverse)
 
 For transcriptomic data from TCGA datasets, we strongly recommend users
 to use the UCSCXenaTools R package. Here we download count data from
-TCGA-LUAD from UCSC using the UCSCXenaTools R package and process the
+TCGA-BLCA from UCSC using the UCSCXenaTools R package and process the
 data using the [IOBR pipeline](https://iobr.github.io/book/).
 
 ``` r
@@ -112,7 +112,7 @@ head(eset[1:5,1:5])
 #> ENSG00000000457             1092              496
 #> ENSG00000000460              386              318
 
-#remove ajacent normal sample of TCGA-LUAD
+#remove ajacent normal sample of TCGA-BLCA
 eset<- eset[,!substring(colnames(eset), 14,16)=="11A"]
 colnames(eset)<- substring(colnames(eset), 1,12)
 summary(duplicated(colnames(eset)))
@@ -151,7 +151,7 @@ We offer two methods to calculate the `uaiscore` score for samples in
 different scenarios. One method involves calculating the score for
 individual samples by inputting them into the uaiscore algorithm, while
 the other method involves calculating the score for multiple samples by
-inputting them together. We utilize data from the OAK studies as
+inputting them together. We utilize data from the IMvigor010 studies as
 reference data to help users understand the distribution of scores for
 their samples.
 
@@ -245,7 +245,7 @@ head(res)
 
 ## Visualisation of results
 
-Relationship between uaiscore score and tumour microenvironmental typing
+Relationship between uaiscore and tumour microenvironmental typing
 
 ``` r
 table(res$MFP)
@@ -259,7 +259,7 @@ p1<- ggplot(res, aes(x= UAIscore, fill= MFP)) +
 #> >>>>Options for `theme`: light, bw, classic and classic2
 ```
 
-Survival analysis of uaiscore score
+Survival analysis of uaiscore
 
 ``` r
 library(survminer)
@@ -326,7 +326,7 @@ p2<- surv_group(
   target_group    = "UAIscore_binary",
   levels          = c("High", "Low"),
   reference_group = "High",
-  project         = "TCGA-LIHC",
+  project         = "TCGA-BLCA",
   time            = "os_time",
   status          = "os_status",
   time_type       = "day",
